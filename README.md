@@ -1,25 +1,28 @@
-# jigglypuff: AI-Controlled Mouse Activity Manager
+# jigglypuff: AI-Controlled Mouse Activity Manager for macOS
 
-jigglypuff is a lightweight mouse activity manager for macOS that can be controlled via Model Context Protocol (MCP) tools. It's designed to keep the screen alive while an AI agent is processing tasks, preventing screen savers from activating or systems from going to sleep. The AI agent can toggle the activity manager on when actively processing and off when waiting for user input.
+**Prevent screen savers, system sleep, and keep your macOS awake during AI processing tasks.** jigglypuff is a lightweight mouse jiggler and activity manager that uses imperceptible cursor movements to simulate user activity. Perfect for developers using AI agents like Qoder and Claude Desktop.
+
+**Keywords**: mouse jiggler, cursor mover, screen saver preventer, system wakefulness, AI automation, macOS automation, MCP tools, Model Context Protocol, keep screen awake, prevent sleep, automation tools, developer utilities
 
 Version: 1.0.0
 
 ## Features
 
-- Prevents screen savers and system sleep during AI processing
-- Allows system to sleep when waiting for user input
-- Controlled via MCP tools for integration with AI agents
-- Lightweight and efficient implementation
-- Small, imperceptible mouse movements
+- **Prevents screen savers and system sleep** during AI processing tasks
+- **Allows system to sleep** when waiting for user input to conserve energy
+- **Controlled via MCP tools** for seamless integration with AI agents
+- **Lightweight and efficient** implementation with minimal system impact
+- **Small, imperceptible mouse movements** that won't interfere with your work
 - **Automatic jiggling rules** - Automatically enables/disables jiggling based on task status
+- **Cross-AI agent compatibility** - Works with Qoder, Claude Desktop, and other MCP-compatible tools
 
 ## Prerequisites
 
-- macOS system
+- macOS system (10.15+ recommended)
 - Homebrew package manager
 - Python 3.11+
-- cliclick CLI tool
-- MCP-compatible AI agent (Qoder, Claude Desktop, etc.)
+- cliclick CLI tool for mouse automation
+- MCP-compatible AI agent (Qoder, Claude Desktop, Cursor, etc.)
 
 ## Installation
 
@@ -68,7 +71,7 @@ The server will listen on stdio transport for MCP-compatible clients.
 
 ### MCP Tools
 
-The server exposes several tools:
+The server exposes several tools for AI agent integration:
 
 1. **wake_up_jiggly** - Initiates the cursor jiggling process
    - `interval`: Time between jiggles in seconds (5-300, default: 30)
@@ -84,7 +87,7 @@ The server exposes several tools:
 
 ### Direct Script Usage
 
-You can also run the jigglypuff script directly:
+You can also run the jigglypuff script directly for manual control:
 
 ```bash
 ./jiggly_puff.sh [interval] [offset]
@@ -104,7 +107,7 @@ Example:
 
 ## MCP Client Configuration
 
-### Qoder
+### Qoder Integration
 
 To register jigglypuff with Qoder, you need to update your global MCP configuration file.
 
@@ -138,7 +141,7 @@ To enable the automatic jiggling rules, add the following to your Qoder configur
 
 For more detailed configuration instructions, see [MCP_CONFIGURATION.md](MCP_CONFIGURATION.md).
 
-### Claude Desktop
+### Claude Desktop Integration
 
 Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
@@ -218,3 +221,21 @@ If you have issues with the MCP SDK, make sure you're using a virtual environmen
 python3 -m venv venv
 source venv/bin/activate
 ```
+
+## Related Tools and Keywords
+
+**Alternative names and related searches**: 
+- Mouse activity simulator
+- Cursor movement automation
+- Screen awake utility
+- System sleep preventer
+- AI agent helper tool
+- MCP automation server
+- macOS productivity tool
+- Developer automation utility
+- Terminal-based mouse mover
+- Background activity generator
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
