@@ -2,6 +2,8 @@
 
 jigglypuff is a lightweight mouse activity manager for macOS that can be controlled via Model Context Protocol (MCP) tools. It's designed to keep the screen alive while an AI agent is processing tasks, preventing screen savers from activating or systems from going to sleep. The AI agent can toggle the activity manager on when actively processing and off when waiting for user input.
 
+Version: 1.0.0
+
 ## Features
 
 - Prevents screen savers and system sleep during AI processing
