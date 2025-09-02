@@ -11,6 +11,7 @@ Version: 1.0.0
 - Controlled via MCP tools for integration with AI agents
 - Lightweight and efficient implementation
 - Small, imperceptible mouse movements
+- **Automatic jiggling rules** - Automatically enables/disables jiggling based on task status
 
 ## Prerequisites
 
@@ -67,7 +68,7 @@ The server will listen on stdio transport for MCP-compatible clients.
 
 ### MCP Tools
 
-The server exposes three tools:
+The server exposes several tools:
 
 1. **wake_up_jiggly** - Initiates the cursor jiggling process
    - `interval`: Time between jiggles in seconds (5-300, default: 30)
@@ -76,6 +77,10 @@ The server exposes three tools:
 2. **put_jiggly_to_sleep** - Terminates the running cursor jiggling process
 
 3. **check_jiggly_status** - Checks current cursor jiggling state
+
+4. **enable_jiggling_before_tasks** - Implements the rule: ALWAYS use jigglypuff MCP to enable jiggling before beginning tasks
+
+5. **disable_jiggling_after_tasks** - Implements the rule: ALWAYS disable jiggling when task complete
 
 ### Direct Script Usage
 
@@ -101,7 +106,37 @@ Example:
 
 ### Qoder
 
-The MCP server will automatically be detected by Qoder.
+To register jigglypuff with Qoder, you need to update your global MCP configuration file.
+
+1. Locate your Qoder MCP configuration file at `~/.config/qoder/mcp.json`
+2. Add the jigglypuff server configuration to the `mcpServers` section:
+
+```json
+{
+  "mcpServers": {
+    "jigglypuff": {
+      "command": "/Users/trose/src/mouse-jiggler/venv/bin/python",
+      "args": ["mcp_server.py"],
+      "cwd": "/Users/trose/src/mouse-jiggler"
+    }
+  }
+}
+```
+
+Make sure to update the paths to match your actual installation directory.
+
+To enable the automatic jiggling rules, add the following to your Qoder configuration:
+
+```json
+{
+  "jigglypuffRules": {
+    "enableOnTaskStart": true,
+    "disableOnTaskComplete": true
+  }
+}
+```
+
+For more detailed configuration instructions, see [MCP_CONFIGURATION.md](MCP_CONFIGURATION.md).
 
 ### Claude Desktop
 
@@ -111,8 +146,8 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 {
   "mcpServers": {
     "jigglypuff": {
-      "command": "python3",
-      "args": ["/path/to/jigglypuff/mcp_server.py"]
+      "command": "/Users/trose/src/mouse-jiggler/venv/bin/python",
+      "args": ["mcp_server.py"]
     }
   }
 }
@@ -123,8 +158,25 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 For other MCP clients:
 - Follow the client-specific documentation for adding MCP servers
 - The server implements the standard MCP protocol
-- Command: `python3 /path/to/jigglypuff/mcp_server.py`
+- Command: `/Users/trose/src/mouse-jiggler/venv/bin/python mcp_server.py`
 - Transport: stdio
+
+## Rules Configuration
+
+jigglypuff includes built-in rules for automatic operation:
+
+1. **enable_jiggling_before_tasks**: Automatically enables jiggling when tasks begin
+2. **disable_jiggling_after_tasks**: Automatically disables jiggling when tasks complete
+
+These rules are defined in `jigglypuff_rules.json` and can be customized as needed.
+
+MCP clients can automatically invoke these rules by calling the appropriate tools:
+- Call `enable_jiggling_before_tasks` when beginning a task
+- Call `disable_jiggling_after_tasks` when completing a task
+
+Alternatively, clients can use the generic tools:
+- Call `wake_up_jiggly` to enable jiggling
+- Call `put_jiggly_to_sleep` to disable jiggling
 
 ## Testing
 
@@ -165,22 +217,4 @@ If you have issues with the MCP SDK, make sure you're using a virtual environmen
 ```bash
 python3 -m venv venv
 source venv/bin/activate
-pip install mcp
 ```
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a pull request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- [cliclick](https://www.bluem.net/en/mac/cliclick/) for mouse automation on macOS
-- [MCP SDK](https://github.com/upstash/mcp) for the Model Context Protocol implementation

@@ -1,0 +1,36 @@
+{
+  "rules": [
+    {
+      "name": "enable_jiggling_before_tasks",
+      "description": "ALWAYS use jigglypuff MCP to enable jiggling before beginning tasks",
+      "trigger": {
+        "type": "task_start"
+      },
+      "actions": [
+        {
+          "type": "mcp_call",
+          "server": "jigglypuff",
+          "tool": "wake_up_jiggly",
+          "parameters": {
+            "interval": 30,
+            "offset": 1
+          }
+        }
+      ]
+    },
+    {
+      "name": "disable_jiggling_after_tasks",
+      "description": "ALWAYS disable jiggling when task complete",
+      "trigger": {
+        "type": "task_complete"
+      },
+      "actions": [
+        {
+          "type": "mcp_call",
+          "server": "jigglypuff",
+          "tool": "put_jiggly_to_sleep"
+        }
+      ]
+    }
+  ]
+}

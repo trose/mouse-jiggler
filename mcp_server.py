@@ -99,6 +99,25 @@ def check_jiggly_status() -> str:
     else:
         return f"jigglypuff is sleeping (process exited with code {jiggler_process.returncode})"
 
+# New tools for rule compliance
+@mcp.tool()
+def enable_jiggling_before_tasks() -> str:
+    """ALWAYS use jigglypuff MCP to enable jiggling before beginning tasks.
+    
+    This tool implements the rule: ALWAYS use jigglypuff MCP enable jiggling before beginning tasks.
+    """
+    logger.info("Enabling jiggling before tasks as per rules")
+    return wake_up_jiggly()
+
+@mcp.tool()
+def disable_jiggling_after_tasks() -> str:
+    """ALWAYS disable jiggling when task complete.
+    
+    This tool implements the rule: ALWAYS disable jiggling when task complete.
+    """
+    logger.info("Disabling jiggling after tasks as per rules")
+    return put_jiggly_to_sleep()
+
 # Log the tools that were registered
 logger.info("Tools registered successfully")
 

@@ -1,10 +1,22 @@
 from setuptools import setup, find_packages
+import os
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 with open("requirements.txt", "r", encoding="utf-8") as fh:
     requirements = fh.read().splitlines()
+
+# Include additional data files
+def package_files(directory):
+    paths = []
+    for (path, directories, filenames) in os.walk(directory):
+        for filename in filenames:
+            paths.append(os.path.join('..', path, filename))
+    return paths
+
+extra_files = package_files('config') if os.path.exists('config') else []
+extra_files.append('jigglypuff_rules.json')
 
 setup(
     name="jigglypuff",
@@ -35,4 +47,5 @@ setup(
         ],
     },
     scripts=["jiggly_puff.sh"],
+    data_files=[('jigglypuff', ['jigglypuff_rules.json'])],
 )

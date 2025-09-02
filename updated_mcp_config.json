@@ -1,0 +1,53 @@
+{
+  "mcpServers": {
+    "ice-locator": {
+      "command": "/Users/trose/src/locator-mcp/.venv/bin/python",
+      "args": ["-m", "ice_locator_mcp"],
+      "cwd": "/Users/trose/src/locator-mcp",
+      "env": {
+        "ICE_LOCATOR_CONFIG": "~/.config/ice-locator-mcp/config.json",
+        "ICE_LOCATOR_RATE_LIMIT": "10",
+        "ICE_LOCATOR_CACHE_ENABLED": "true",
+        "ICE_LOCATOR_PROXY_ENABLED": "false",
+        "ICE_LOCATOR_LANGUAGE": "en"
+      }
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ]
+    },
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-postgres",
+        "postgresql://localhost/mydb"
+      ]
+    },
+    "chunkhound": {
+      "command": "chunkhound",
+      "args": ["mcp", "--db", "./chunks.duckdb", "--http", "--port", "8080"],
+      "cwd": "."
+    },
+    "gepa-mcp": {
+      "command": "uv",
+      "args": ["run", "python", "run_server.py"],
+      "cwd": "/Users/trose/src/locator-mcp/gepa-mcp",
+      "env": {}
+    },
+    "jigglypuff": {
+      "command": "/Users/trose/src/mouse-jiggler/venv/bin/python",
+      "args": ["mcp_server.py"],
+      "cwd": "/Users/trose/src/mouse-jiggler"
+    }
+  }
+}
