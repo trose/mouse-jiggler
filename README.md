@@ -156,8 +156,25 @@ Run the provided test suite to verify functionality:
 
 ```bash
 source venv/bin/activate
-python test_functions.py
+
+# Run individual test files
+python tests/test_functions.py
+python tests/test_comprehensive.py
+
+# Or run all tests (if you have pytest installed)
+pytest tests/
 ```
+
+### Test Structure
+
+The test suite is organized in the `tests/` directory:
+
+- **`test_functions.py`** - Basic functionality tests
+- **`test_comprehensive.py`** - Comprehensive test suite with real system interactions
+- **`test_mcp_*.py`** - MCP server integration tests
+- **`test_notification.py`** - Notification system tests
+- **`test_rules*.py`** - Rule compliance tests
+- **`test_config*.py`** - Configuration and path tests
 
 ## LobeHub Integration
 
