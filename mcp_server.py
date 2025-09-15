@@ -20,6 +20,32 @@ logger.info("Registering tools...")
 # Global process reference
 jiggler_process: Optional[subprocess.Popen] = None
 
+def send_notification(title: str, message: str, subtitle: str = "jigglypuff Notification", sound: bool = True) -> bool:
+    """Send a macOS notification using osascript.
+    
+    Args:
+        title: The title of the notification
+        message: The main message content
+        subtitle: The subtitle of the notification
+        sound: Whether to play a sound with the notification
+        
+    Returns:
+        bool: True if notification was sent successfully, False otherwise
+    """
+    try:
+        # Build the AppleScript command
+        script = f'display notification "{message}" with title "{title}" subtitle "{subtitle}"'
+        if sound:
+            script += ' sound name "Ping"'
+        
+        # Execute the notification
+        subprocess.run(["osascript", "-e", script], check=True, timeout=5)
+        logger.info(f"Notification sent: {title} - {subtitle} - {message}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to send notification: {e}")
+        return False
+
 @mcp.tool()
 def wake_up_jiggly(interval: int = 30, offset: int = 1) -> str:
     """Wake up jigglypuff to start jiggling the cursor.
@@ -36,7 +62,13 @@ def wake_up_jiggly(interval: int = 30, offset: int = 1) -> str:
     
     # Check if already running
     if jiggler_process and jiggler_process.poll() is None:
-        return f"jigglypuff is already jiggling with PID {jiggler_process.pid}"
+        result = f"jigglypuff is already jiggling with PID {jiggler_process.pid}"
+        send_notification(
+            "jigglypuff Status", 
+            result, 
+            "Already Running"
+        )
+        return result
     
     try:
         # Get the directory of this script
@@ -47,11 +79,23 @@ def wake_up_jiggly(interval: int = 30, offset: int = 1) -> str:
         jiggler_process = subprocess.Popen(["bash", script_path, str(interval), str(offset)])
         logger.info(f"jigglypuff started jiggling with PID {jiggler_process.pid}")
         
-        return f"jigglypuff started jiggling successfully with PID {jiggler_process.pid}, interval={interval}s, offset={offset}px"
+        result = f"jigglypuff started jiggling successfully with PID {jiggler_process.pid}, interval={interval}s, offset={offset}px"
+        send_notification(
+            "jigglypuff Started", 
+            f"Mouse jiggling every {interval} seconds with {offset}px movement",
+            "Task Started"
+        )
+        return result
         
     except Exception as e:
         logger.error(f"Failed to wake up jigglypuff: {e}")
-        return f"Error waking up jigglypuff: {e}"
+        error_msg = f"Error waking up jigglypuff: {e}"
+        send_notification(
+            "jigglypuff Error", 
+            error_msg, 
+            "Failed to Start"
+        )
+        return error_msg
 
 @mcp.tool()
 def put_jiggly_to_sleep() -> str:
@@ -60,7 +104,13 @@ def put_jiggly_to_sleep() -> str:
     
     # Check if running
     if not jiggler_process or jiggler_process.poll() is not None:
-        return "jigglypuff is already sleeping"
+        result = "jigglypuff is already sleeping"
+        send_notification(
+            "jigglypuff Status", 
+            result, 
+            "Already Sleeping"
+        )
+        return result
     
     try:
         # Terminate the process
@@ -70,7 +120,13 @@ def put_jiggly_to_sleep() -> str:
         jiggler_process = None
         
         logger.info(f"jigglypuff with PID {pid} put to sleep")
-        return f"jigglypuff with PID {pid} put to sleep successfully"
+        result = f"jigglypuff with PID {pid} put to sleep successfully"
+        send_notification(
+            "jigglypuff Stopped", 
+            result, 
+            "Task Completed"
+        )
+        return result
         
     except subprocess.TimeoutExpired:
         # Force kill if not responding
@@ -80,11 +136,23 @@ def put_jiggly_to_sleep() -> str:
         jiggler_process = None
         
         logger.warning(f"jigglypuff with PID {pid} force put to sleep")
-        return f"jigglypuff with PID {pid} force put to sleep"
+        result = f"jigglypuff with PID {pid} force put to sleep"
+        send_notification(
+            "jigglypuff Force Stopped", 
+            result, 
+            "Task Completed"
+        )
+        return result
     
     except Exception as e:
         logger.error(f"Error putting jigglypuff to sleep: {e}")
-        return f"Error putting jigglypuff to sleep: {e}"
+        error_msg = f"Error putting jigglypuff to sleep: {e}"
+        send_notification(
+            "jigglypuff Error", 
+            error_msg, 
+            "Failed to Stop"
+        )
+        return error_msg
 
 @mcp.tool()
 def check_jiggly_status() -> str:
@@ -92,12 +160,30 @@ def check_jiggly_status() -> str:
     global jiggler_process
     
     if not jiggler_process:
-        return "jigglypuff is sleeping (no process)"
+        result = "jigglypuff is sleeping (no process)"
+        send_notification(
+            "jigglypuff Status", 
+            result, 
+            "Current Status"
+        )
+        return result
     
     if jiggler_process.poll() is None:
-        return f"jigglypuff is jiggling with PID {jiggler_process.pid}"
+        result = f"jigglypuff is jiggling with PID {jiggler_process.pid}"
+        send_notification(
+            "jigglypuff Status", 
+            result, 
+            "Currently Active"
+        )
+        return result
     else:
-        return f"jigglypuff is sleeping (process exited with code {jiggler_process.returncode})"
+        result = f"jigglypuff is sleeping (process exited with code {jiggler_process.returncode})"
+        send_notification(
+            "jigglypuff Status", 
+            result, 
+            "Current Status"
+        )
+        return result
 
 # New tools for rule compliance
 @mcp.tool()
@@ -107,7 +193,13 @@ def enable_jiggling_before_tasks() -> str:
     This tool implements the rule: ALWAYS use jigglypuff MCP enable jiggling before beginning tasks.
     """
     logger.info("Enabling jiggling before tasks as per rules")
-    return wake_up_jiggly()
+    result = wake_up_jiggly()
+    send_notification(
+        "Task Starting", 
+        "jigglypuff enabled jiggling before task execution", 
+        "Rule Compliance"
+    )
+    return result
 
 @mcp.tool()
 def disable_jiggling_after_tasks() -> str:
@@ -116,10 +208,180 @@ def disable_jiggling_after_tasks() -> str:
     This tool implements the rule: ALWAYS disable jiggling when task complete.
     """
     logger.info("Disabling jiggling after tasks as per rules")
-    return put_jiggly_to_sleep()
+    result = put_jiggly_to_sleep()
+    send_notification(
+        "Task Completed", 
+        "jigglypuff disabled jiggling after task execution", 
+        "Rule Compliance"
+    )
+    return result
 
-# Log the tools that were registered
-logger.info("Tools registered successfully")
+# Add prompts for user interaction
+@mcp.prompt()
+def jigglypuff_help() -> str:
+    """Get help and guidance for using jigglypuff effectively.
+    
+    This prompt provides comprehensive guidance on how to use jigglypuff
+    for different scenarios and best practices.
+    """
+    return """# jigglypuff Usage Guide
+
+## What is jigglypuff?
+jigglypuff is an AI-controlled mouse activity manager that prevents screen savers and system sleep during AI processing tasks by making imperceptible cursor movements.
+
+## When to Use jigglypuff
+- **Before starting AI tasks**: Always enable jiggling before beginning long-running AI operations
+- **During code generation**: Keep your system awake while AI agents write code
+- **During file processing**: Prevent sleep during large file operations
+- **During API calls**: Maintain system activity during network operations
+
+## Best Practices
+1. **Enable before tasks**: Use `enable_jiggling_before_tasks()` at the start of AI operations
+2. **Disable after completion**: Use `disable_jiggling_after_tasks()` when tasks finish
+3. **Check status**: Use `check_jiggly_status()` to verify current state
+4. **Custom settings**: Use `wake_up_jiggly(interval, offset)` for specific needs
+
+## Tool Overview
+- `wake_up_jiggly(interval, offset)`: Start jiggling with custom settings
+- `put_jiggly_to_sleep()`: Stop jiggling immediately
+- `check_jiggly_status()`: Check if jiggling is active
+- `enable_jiggling_before_tasks()`: Rule-compliant task start
+- `disable_jiggling_after_tasks()`: Rule-compliant task end
+
+## Configuration Tips
+- **Interval**: 30 seconds (default) works well for most tasks
+- **Offset**: 1 pixel (default) is imperceptible but effective
+- **Energy saving**: jigglypuff allows system sleep when not actively jiggling
+
+Remember: jigglypuff is designed to work seamlessly with AI agents like Qoder and Claude Desktop!"""
+
+@mcp.prompt()
+def jigglypuff_troubleshooting() -> str:
+    """Get troubleshooting help for common jigglypuff issues.
+    
+    This prompt provides solutions for common problems users might encounter.
+    """
+    return """# jigglypuff Troubleshooting Guide
+
+## Common Issues and Solutions
+
+### "jigglypuff is already jiggling"
+- **Cause**: Another jiggling process is already running
+- **Solution**: Use `check_jiggly_status()` to verify, then `put_jiggly_to_sleep()` if needed
+
+### "Failed to wake up jigglypuff"
+- **Cause**: Missing dependencies or permissions
+- **Solutions**:
+  1. Ensure `cliclick` is installed: `brew install cliclick`
+  2. Check accessibility permissions in System Preferences
+  3. Verify the `jiggly_puff.sh` script exists and is executable
+
+### "jigglypuff is sleeping (process exited)"
+- **Cause**: The jiggling process stopped unexpectedly
+- **Solution**: Simply call `wake_up_jiggly()` to restart
+
+### No notifications appearing
+- **Cause**: Notification permissions or system settings
+- **Solutions**:
+  1. Check Notification Center settings
+  2. Ensure Terminal/iTerm2 has notification permissions
+  3. Verify macOS notification settings
+
+### High CPU usage
+- **Cause**: Very short interval settings
+- **Solution**: Use longer intervals (30+ seconds) for better efficiency
+
+## System Requirements
+- macOS 10.15+ (Catalina or later)
+- Homebrew package manager
+- Python 3.11+
+- cliclick CLI tool
+- Accessibility permissions for Terminal
+
+## Getting Help
+If issues persist, check the logs in your terminal or contact the maintainer."""
+
+# Add resources for context data management
+@mcp.resource("jigglypuff-config")
+def get_jigglypuff_config() -> str:
+    """Get the current jigglypuff configuration and status.
+    
+    This resource provides access to the current configuration state
+    and system information for jigglypuff.
+    """
+    global jiggler_process
+    
+    config = {
+        "server_name": "jigglypuff",
+        "version": "1.0.0",
+        "status": "unknown",
+        "process_id": None,
+        "default_interval": 30,
+        "default_offset": 1,
+        "max_interval": 300,
+        "min_interval": 5,
+        "max_offset": 10,
+        "min_offset": 1,
+        "platform": "macOS",
+        "dependencies": ["cliclick", "bash", "osascript"]
+    }
+    
+    if jiggler_process:
+        if jiggler_process.poll() is None:
+            config["status"] = "jiggling"
+            config["process_id"] = jiggler_process.pid
+        else:
+            config["status"] = "stopped"
+            config["exit_code"] = jiggler_process.returncode
+    else:
+        config["status"] = "sleeping"
+    
+    import json
+    return json.dumps(config, indent=2)
+
+@mcp.resource("jigglypuff-rules")
+def get_jigglypuff_rules() -> str:
+    """Get the jigglypuff usage rules and best practices.
+    
+    This resource provides the official rules and guidelines
+    for using jigglypuff with AI agents.
+    """
+    rules = {
+        "primary_rules": [
+            "ALWAYS use jigglypuff MCP to enable jiggling before beginning tasks",
+            "ALWAYS disable jiggling when task complete"
+        ],
+        "secondary_rules": [
+            "Check jiggly status before starting new tasks",
+            "Use appropriate interval settings for task duration",
+            "Enable notifications for task status updates"
+        ],
+        "best_practices": [
+            "Start with default settings (30s interval, 1px offset)",
+            "Monitor system performance with custom intervals",
+            "Use rule-compliant tools for automated workflows",
+            "Check status regularly during long-running tasks"
+        ],
+        "compliance_tools": [
+            "enable_jiggling_before_tasks()",
+            "disable_jiggling_after_tasks()"
+        ]
+    }
+    
+    import json
+    return json.dumps(rules, indent=2)
+
+# Log the tools, prompts, and resources that were registered
+logger.info("Tools, prompts, and resources registered successfully")
 
 if __name__ == "__main__":
+    # Send a startup notification
+    try:
+        subprocess.run([
+            "osascript", "-e", 
+            'display notification "jigglypuff MCP server started" with title "jigglypuff" subtitle "Server Online" sound name "Ping"'
+        ], check=True, timeout=5)
+    except Exception as e:
+        logger.error(f"Failed to send startup notification: {e}")
+    
     mcp.run(transport='stdio')

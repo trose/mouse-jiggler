@@ -76,17 +76,40 @@ The server will listen on stdio transport for MCP-compatible clients.
 
 The server exposes several tools for AI agent integration:
 
+#### Core Tools
 1. **wake_up_jiggly** - Initiates the cursor jiggling process
    - `interval`: Time between jiggles in seconds (5-300, default: 30)
    - `offset`: Mouse movement offset in pixels (1-10, default: 1)
+   - Returns: Status message with PID and settings
 
 2. **put_jiggly_to_sleep** - Terminates the running cursor jiggling process
+   - Returns: Confirmation message with PID
 
 3. **check_jiggly_status** - Checks current cursor jiggling state
+   - Returns: Current status (jiggling, sleeping, or stopped)
 
+#### Rule-Compliant Tools
 4. **enable_jiggling_before_tasks** - Implements the rule: ALWAYS use jigglypuff MCP to enable jiggling before beginning tasks
+   - Automatically starts jiggling with default settings
+   - Sends notification about task start
 
 5. **disable_jiggling_after_tasks** - Implements the rule: ALWAYS disable jiggling when task complete
+   - Automatically stops jiggling
+   - Sends notification about task completion
+
+### MCP Prompts
+
+The server provides helpful prompts for user interaction:
+
+1. **jigglypuff_help** - Comprehensive usage guide and best practices
+2. **jigglypuff_troubleshooting** - Solutions for common issues and problems
+
+### MCP Resources
+
+The server exposes resources for context data management:
+
+1. **jigglypuff-config** - Current configuration and system status (JSON format)
+2. **jigglypuff-rules** - Official usage rules and best practices (JSON format)
 
 ### Notification MCP Server
 
@@ -134,6 +157,25 @@ Run the provided test suite to verify functionality:
 ```bash
 source venv/bin/activate
 python test_functions.py
+```
+
+## LobeHub Integration
+
+This MCP server is registered with [LobeHub](https://lobehub.com/mcp/trose-jigglypuff) and includes:
+
+- ✅ **MCP Tools**: 5 tools for mouse jiggling control
+- ✅ **MCP Prompts**: 2 prompts for help and troubleshooting  
+- ✅ **MCP Resources**: 2 resources for configuration and rules
+- ✅ **Installation Methods**: Multiple deployment options
+- ✅ **README Documentation**: Comprehensive usage guide
+- ✅ **MIT License**: Open source licensing
+
+### GitHub Badge
+
+To claim ownership of this MCP server on LobeHub, add this badge to your README:
+
+```markdown
+[![MCP Badge](https://lobehub.com/badge/mcp/trose-jigglypuff)](https://lobehub.com/mcp/trose-jigglypuff)
 ```
 
 ## Contributing
