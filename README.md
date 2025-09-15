@@ -2,9 +2,9 @@
 
 [![MCP Badge](https://lobehub.com/badge/mcp/trose-jigglypuff)](https://lobehub.com/mcp/trose-jigglypuff)
 
-**Prevent screen savers, system sleep, and keep your macOS awake during AI processing tasks.** jigglypuff is a lightweight mouse jiggler and activity manager that uses imperceptible cursor movements to simulate user activity. Perfect for developers using AI agents like Qoder and Claude Desktop.
+**Prevent screen savers, system sleep, and keep your macOS awake during AI processing tasks.** jigglypuff is a lightweight mouse jiggler and activity manager that uses imperceptible cursor movements to simulate user activity. Perfect for developers using AI agents like Cursor, Qoder and Claude Desktop.
 
-**Keywords**: mouse jiggler, cursor mover, screen saver preventer, system wakefulness, AI automation, macOS automation, MCP tools, Model Context Protocol, keep screen awake, prevent sleep, automation tools, developer utilities, notification system, user alerts, macOS notifications
+**Keywords**: mouse jiggler, cursor mover, screen saver preventer, system wakefulness, AI automation, macOS automation, MCP tools, Model Context Protocol, keep screen awake, prevent sleep, automation tools, developer utilities
 
 Version: 1.0.0
 
@@ -17,7 +17,6 @@ Version: 1.0.0
 - **Small, imperceptible mouse movements** that won't interfere with your work
 - **Automatic jiggling rules** - Automatically enables/disables jiggling based on task status
 - **Cross-AI agent compatibility** - Works with Qoder, Claude Desktop, and other MCP-compatible tools
-- **User Notification System** - Sends macOS notifications when Qoder needs your attention
 
 ## Prerequisites
 
@@ -111,26 +110,13 @@ The server exposes resources for context data management:
 1. **jigglypuff-config** - Current configuration and system status (JSON format)
 2. **jigglypuff-rules** - Official usage rules and best practices (JSON format)
 
-### Notification MCP Server
-
-The project also includes a macOS Notification MCP server that allows Qoder to send notifications to your system:
-
-1. **sound_notification** - Play system sounds to get your attention
-2. **banner_notification** - Display visual notifications in macOS Notification Center
-3. **speak_notification** - Convert text to speech
-4. **list_available_voices** - List all available text-to-speech voices
-5. **test_notification_system** - Diagnostic tool to verify all notification methods
-
-See [NOTIFICATION_MCP_USAGE.md](NOTIFICATION_MCP_USAGE.md) for detailed usage instructions.
-
 ## Configuration
 
 ### MCP Server Configuration
 
-The MCP servers are configured in your Qoder configuration file. The configuration includes:
+The configuration includes:
 
 1. **jigglypuff** - The main mouse jiggling server
-2. **macos-notification** - The notification server for user alerts
 
 Example configuration:
 ```json
@@ -140,11 +126,6 @@ Example configuration:
       "command": "/Users/trose/src/mouse-jiggler/venv/bin/python",
       "args": ["mcp_server.py"],
       "cwd": "/Users/trose/src/mouse-jiggler"
-    },
-    "macos-notification": {
-      "command": "/Users/trose/src/macos-notification-mcp/venv/bin/macos-notification-mcp",
-      "args": [],
-      "cwd": "/Users/trose/src/macos-notification-mcp"
     }
   }
 }
@@ -165,17 +146,6 @@ python tests/test_comprehensive.py
 pytest tests/
 ```
 
-### Test Structure
-
-The test suite is organized in the `tests/` directory:
-
-- **`test_functions.py`** - Basic functionality tests
-- **`test_comprehensive.py`** - Comprehensive test suite with real system interactions
-- **`test_mcp_*.py`** - MCP server integration tests
-- **`test_notification.py`** - Notification system tests
-- **`test_rules*.py`** - Rule compliance tests
-- **`test_config*.py`** - Configuration and path tests
-
 ## LobeHub Integration
 
 This MCP server is registered with [LobeHub](https://lobehub.com/mcp/trose-jigglypuff) and includes:
@@ -186,14 +156,6 @@ This MCP server is registered with [LobeHub](https://lobehub.com/mcp/trose-jiggl
 - ✅ **Installation Methods**: Multiple deployment options
 - ✅ **README Documentation**: Comprehensive usage guide
 - ✅ **MIT License**: Open source licensing
-
-### GitHub Badge
-
-To claim ownership of this MCP server on LobeHub, add this badge to your README:
-
-```markdown
-[![MCP Badge](https://lobehub.com/badge/mcp/trose-jigglypuff)](https://lobehub.com/mcp/trose-jigglypuff)
-```
 
 ## Contributing
 
