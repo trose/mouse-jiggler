@@ -90,11 +90,9 @@ The server exposes several tools for AI agent integration:
 #### Rule-Compliant Tools
 4. **enable_jiggling_before_tasks** - Implements the rule: ALWAYS use jigglypuff MCP to enable jiggling before beginning tasks
    - Automatically starts jiggling with default settings
-   - Sends notification about task start
 
 5. **disable_jiggling_after_tasks** - Implements the rule: ALWAYS disable jiggling when task complete
    - Automatically stops jiggling
-   - Sends notification about task completion
 
 ### MCP Prompts
 
