@@ -16,7 +16,7 @@ Version: 1.0.0
 - **Lightweight and efficient** implementation with minimal system impact
 - **Small, imperceptible mouse movements** that won't interfere with your work
 - **Automatic jiggling rules** - Automatically enables/disables jiggling based on task status
-- **Cross-AI agent compatibility** - Works with Qoder, Claude Desktop, and other MCP-compatible tools
+- **Cross-AI agent compatibility** - Works with Cursor, Qoder, Claude Desktop, and other MCP-compatible tools
 
 ## Prerequisites
 
@@ -90,11 +90,9 @@ The server exposes several tools for AI agent integration:
 #### Rule-Compliant Tools
 4. **enable_jiggling_before_tasks** - Implements the rule: ALWAYS use jigglypuff MCP to enable jiggling before beginning tasks
    - Automatically starts jiggling with default settings
-   - Sends notification about task start
 
 5. **disable_jiggling_after_tasks** - Implements the rule: ALWAYS disable jiggling when task complete
    - Automatically stops jiggling
-   - Sends notification about task completion
 
 ### MCP Prompts
 
@@ -113,10 +111,6 @@ The server exposes resources for context data management:
 ## Configuration
 
 ### MCP Server Configuration
-
-The configuration includes:
-
-1. **jigglypuff** - The main mouse jiggling server
 
 Example configuration:
 ```json
